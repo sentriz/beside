@@ -1,0 +1,36 @@
+unix pipeline stage with before and after preview
+
+(probably only useful if there is a 1-1 relationship between stdin and subproc's stdout)
+(it's not at problem if subproc buffers its stdout since it's drained in parallel with stdin)
+
+to install
+
+$ go install go.senan.xyz/beside@master
+
+$ cat names
+alice
+bob
+mick
+
+$ cat names | beside sed "s/.*/\U&/"
+alice   ALICE
+bob     BOB
+mick    MICK
+
+it works for streams too
+
+$ yes yes! | beside yes no! | head -n 3
+yes!    no!
+yes!    no!
+yes!    no!
+
+$ printf "%s\n" "today" "yesterday" "tuesday" | beside date +%s -f -
+today      1700851529
+yesterday  1700765129
+tuesday    1701129600
+
+$ jq <counties_ire.json '.[] | .name' | beside unidecode | column -s $'\t' -t
+An Cabhán          An Cabhan
+Baile Átha Cliath  Baile Atha Cliath
+An Longfort        An Longfort
+Ros Comáin         Ros Comain
