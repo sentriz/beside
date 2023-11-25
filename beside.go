@@ -13,7 +13,11 @@ func main() {
 		fmt.Fprintf(os.Stderr, "usage: input | %s COMMAND [ ARG ] ...\n", os.Args[0])
 		os.Exit(1)
 	}
-	if err := run(os.Stdin, os.Stdout, os.Args[1], os.Args[2:]); err != nil {
+
+	out := bufio.NewWriter(os.Stdout)
+	defer out.Flush()
+
+	if err := run(os.Stdin, out, os.Args[1], os.Args[2:]); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
